@@ -11,8 +11,15 @@ export default function Home() {
         "Content-Type": "application/json",
         Accept: "application/json",
         },
-      }).then((res) => {if (!res.ok) console.log(res)
-                        else console.log(res.body)})}, []
+      })
+        .then((res) => {
+          if (!res.ok) console.log(res)
+          else return res.json() 
+        })
+        .then((data) => {
+          console.log(data.message)
+        })
+        .catch(error => console.log(error))}, []
   )
 
   return (

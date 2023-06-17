@@ -10,11 +10,11 @@ export async function initPinecone() {
   try {
 
     await pinecone.init({
-      environment: process.env.ENV ?? '',
-      apiKey: process.env.KEY ?? '',
+      environment: process.env.ENV as string,
+      apiKey: process.env.KEY as string,
     });
-
     return pinecone;
+    
   } catch (error) {
     console.log('error', error);
     throw new Error('Failed to initialize Pinecone Client');
