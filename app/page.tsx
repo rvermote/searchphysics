@@ -13,7 +13,7 @@ export default function Home() {
         },
       })
         .then((res) => {
-          if (!res.ok) console.log(res)
+          if (!res.ok) throw new Error(res.status + " " + res.statusText)
           else return res.json() 
         })
         .then((data) => {
