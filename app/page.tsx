@@ -1,7 +1,12 @@
 "use client"
-import {useEffect} from "react";
+import {useEffect,useState} from "react";
+import {ChakraProvider,Input,Container,Text,extendTheme} from "@chakra-ui/react";
+
+const themeConfig = {initialColorMode: 'dark', useSystemColorMode: false}
 
 export default function Home() {
+
+  const [text, setText] = useState<string>("")
 
   useEffect(() => {
     fetch("/api/pineconeRequest", {
@@ -23,8 +28,11 @@ export default function Home() {
   )
 
   return (
-    <div>
-      test
-    </div>
-  )
-}
+  <div>
+    <ChakraProvider theme={extendTheme({initialColorMode: 'dark', useSystemColorMode: false})}>
+      <Container id="main" textAlign="center" maxW="600px" mt={12}>
+        <Input placeholder="Send a question" onChange={(e) => setText(e.target.value)} />
+      </Container>
+    </ChakraProvider>
+  </div>
+)}
