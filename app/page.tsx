@@ -45,14 +45,38 @@ export default function Home() {
     }
   }
 
-  const makeText = (text,searches,index) => {
+  const OpenLink = (search:Object) => {
+    let seconds = Math.max(0,search["start"]-5)
+    try{
+      const hours = Math.floor(seconds / 3600)
+      const minutes = Math.floor((seconds - (hours * 3600)) / 60)
+      const sec = seconds - (hours * 3600) - (minutes * 60)
+      window.open("https://www.youtube.com/watch?v="+search["url"]+"&t="+hours+"h"+minutes+"m"+sec+"s", "_blank")
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+  const secondsToHour = (seconds:number) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds - (hours * 3600)) / 60)
+    const sec = seconds - (hours * 3600) - (minutes * 60)
+    return hours + ":" + minutes + ":" + sec
+  }
+    
+
+  const makeText = (text:string,searches:Object[],index:number) => {
     return (
       <React.Fragment key={`${text}_${index}`}>
-        <Text m="2" fontSize="lg">{text}</Text>
+        <Text key={`${text}_${index}_main`} m="2" fontSize="lg">{text}</Text>
         {searches.map((search, subIndex) => (
-          <Flex direction="column" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="6">
+          <Flex key={`${text}_${index}_sub_${subIndex}_main`} direction="column" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="6" position="relative">
+            <Text key={`${text}_${index}_sub_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
             <Text key={`${text}_${index}_sub_${subIndex}_title`} fontWeight="600" align="center">{search["title"]} </Text>
-            <Text key={`${text}_${index}_sub_${subIndex}_text`} >... {search["text"]} ...</Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_text`} display={ subIndex>1?"none":""} >... {search["text"]} ...</Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_time`} align="right" color="gray.500" onClick={() => OpenLink(search)}> 
+              <span className="hover:cursor-pointer">{secondsToHour(search["start"])} - {secondsToHour(search["end"])} </span>
+            </Text>
           </Flex>
         ))}
       </React.Fragment>
