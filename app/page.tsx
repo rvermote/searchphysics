@@ -39,6 +39,7 @@ export default function Home() {
   const sendRequest = () => {
     if (debounce){
       setDebounce(false)
+      setText("")
       fetchPinecone()
       setTimeout(() => {setDebounce(true)}, 3000)
     }
@@ -47,12 +48,12 @@ export default function Home() {
   const makeText = (text,searches,index) => {
     return (
       <React.Fragment key={`${text}_${index}`}>
-        <Text>{text}</Text>
+        <Text m="2" fontSize="lg">{text}</Text>
         {searches.map((search, subIndex) => (
-          <Container>
-            <Text key={`${text}_${index}_sub_${subIndex}_title`}>From {search["title"]} </Text>
-            <Text key={`${text}_${index}_sub_${subIndex}_text`}>... {search["text"]} ...</Text>
-          </Container>
+          <Flex direction="column" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="6">
+            <Text key={`${text}_${index}_sub_${subIndex}_title`} fontWeight="600" align="center">{search["title"]} </Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_text`} >... {search["text"]} ...</Text>
+          </Flex>
         ))}
       </React.Fragment>
     )}
@@ -62,10 +63,10 @@ export default function Home() {
         <Container maxW="1000px" my="5">
           <Flex direction="column-reverse" justifyContent="flex-start" align="center" gap="5" minH="calc(100vh - 5rem)">
             <Container id="main" textAlign="center">
-              <Input placeholder="Send a question" onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
+              <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
             </Container>
             <Container maxHeight="calc(100vh - 10rem)"overflow="auto">
-              <Flex direction="column" justifyContent="flex-end" align = "center" gap="3">
+              <Flex direction="column" justifyContent="flex-end" align = "center" gap="2">
                 {results.map(([text,searches],index) => makeText(text,searches,index))}
               </Flex>
             </Container>
