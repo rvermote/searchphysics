@@ -1,5 +1,6 @@
 "use client"
 import {useEffect,useState} from "react";
+import Image from "next/image";
 import {ChakraProvider,Input,Container,Flex,extendTheme, Text} from "@chakra-ui/react";
 import React from "react";
 
@@ -58,10 +59,14 @@ export default function Home() {
   }
 
   const secondsToHour = (seconds:number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds - (hours * 3600)) / 60)
-    const sec = seconds - (hours * 3600) - (minutes * 60)
-    return hours + ":" + minutes + ":" + sec
+    const hours:number = Math.floor(seconds / 3600)
+    const minutes:number = Math.floor((seconds - (hours * 3600)) / 60)
+    const sec:number = seconds - (hours * 3600) - (minutes * 60)
+
+    const paddedMinutes: string = minutes > 9 ? String(minutes) : `0${minutes}`
+    const paddedSec: string = sec > 9 ? String(sec) : `0${sec}`
+
+    return hours + ":" + paddedMinutes  + ":" + paddedSec
   }
     
 
@@ -70,12 +75,15 @@ export default function Home() {
       <React.Fragment key={`${text}_${index}`}>
         <Text key={`${text}_${index}_main`} m="2" fontSize="lg">{text}</Text>
         {searches.map((search, subIndex) => (
-          <Flex key={`${text}_${index}_sub_${subIndex}_main`} direction="column" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="6" position="relative">
+          <Flex key={`${text}_${index}_sub_${subIndex}_main`} direction="column" alignItems="center" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="3" position="relative">
             <Text key={`${text}_${index}_sub_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
-            <Text key={`${text}_${index}_sub_${subIndex}_title`} fontWeight="600" align="center">{search["title"]} </Text>
-            <Text key={`${text}_${index}_sub_${subIndex}_text`} display={ subIndex>1?"none":""} >... {search["text"]} ...</Text>
-            <Text key={`${text}_${index}_sub_${subIndex}_time`} align="right" color="gray.500" onClick={() => OpenLink(search)}> 
-              <span className="hover:cursor-pointer">{secondsToHour(search["start"])} - {secondsToHour(search["end"])} </span>
+            <Text key={`${text}_${index}_sub_${subIndex}_title`} fontWeight="600" align="center" maxW="80%">{search["title"]} </Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_text`} backgroundColor={subIndex % 2 ? 'gray.200' : 'white'} borderRadius="lg" p="1rem">... {subIndex==0?search["text"]:search["text"].substring(0,200)} ...</Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_time`} alignItems="end" color="gray.500" onClick={() => OpenLink(search)}> 
+              <span className={`flex justify-between hover:cursor-pointer ${subIndex % 2 ? 'bg-gray-200' : 'bg-white'} p-1 rounded-lg`}>
+                <Image src="/images/Youtube.svg" height={32} width={32} alt="YouTube Logo"/> 
+                {secondsToHour(search["start"])} - {secondsToHour(search["end"])}
+              </span>
             </Text>
           </Flex>
         ))}
