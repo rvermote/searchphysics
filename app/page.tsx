@@ -30,7 +30,7 @@ export default function Home() {
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
   }
 
-  const fetchPinecone = () => {fetch("/api/pineconeRequest", {
+  const fetchPinecone = async () => {fetch("/api/pineconeRequest", {
     method: "POST",
     body: JSON.stringify({question: text}),
     headers: {
@@ -51,13 +51,13 @@ export default function Home() {
       .catch(error => {console.log(error); setLoading(false)})}
 
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
     if (!debounce){
       setDebounce(true)
       setLoading(true)
       setText("")
-      fetchPinecone()
       setTimeout(() => {setDebounce(false)}, 1000)
+      await fetchPinecone()
     }
   }
 
