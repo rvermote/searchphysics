@@ -4,6 +4,7 @@ import Image from "next/image";
 import {ChakraProvider,Input,Container,Flex,extendTheme, Text} from "@chakra-ui/react";
 import React from "react";
 import {ReplaceTitle, OpenLink, secondsToHour} from "@/components/functions";
+import {FaRegPaperPlane} from "react-icons/fa"
 
 type Result = [string, Search[]]
 type Search = {title:string, text:string, start:number, end:number, url:string}
@@ -15,7 +16,8 @@ export default function Home() {
 
   const [text, setText] = useState<string>("")
   const [results, setResults] = useState<Result[]>([])
-  const [debounce, setDebounce] = useState<boolean>(true)
+  const [debounce, setDebounce] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
   useEffect(() => {
@@ -44,16 +46,18 @@ export default function Home() {
         setTextStates((prevTextStates) => ({...prevTextStates, globalID:prevTextStates.globalID+1}))
         data.message.forEach((m:Object, subIndex:number) => textStateSetter(textStates.globalID, subIndex, subIndex==0))
         setResults((prevResults) => [...prevResults, [text,data.message.map((record:Search) => {return {...record, title:ReplaceTitle(record.title)}})]])
+        setLoading(false)
       })
-      .catch(error => console.log(error))}
+      .catch(error => {console.log(error); setLoading(false)})}
 
 
   const sendRequest = () => {
-    if (debounce){
-      setDebounce(false)
+    if (!debounce){
+      setDebounce(true)
+      setLoading(true)
       setText("")
       fetchPinecone()
-      setTimeout(() => {setDebounce(true)}, 3000)
+      setTimeout(() => {setDebounce(false)}, 1000)
     }
   }
 
@@ -86,8 +90,9 @@ export default function Home() {
         <div className="max-h-screen p-[3rem]">
           <ChakraProvider>
             <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5">
-              <Container id="main" textAlign="center">
-                <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
+              <Container id="main" textAlign="center" position="relative" >
+                <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter" && !debounce && !loading) sendRequest()}} p="1.5rem" backgroundColor="gray.100"/>
+                <FaRegPaperPlane color={!debounce && !loading ? "green" : "red"} onClick={() => {if(!debounce && !loading && text!="") sendRequest()} }className="hover:cursor-pointer text-xl absolute z-10 right-[2.3rem] top-[1rem]"/>
               </Container>
               <div id="mainContainer" className="max-h-[calc(100vh-10rem)] max-w-[600px] overflow-auto mt-3">
                 <Flex direction="column-reverse" justifyContent="flex-start" align = "center" gap="5">
@@ -98,8 +103,3 @@ export default function Home() {
             </ChakraProvider>
         </div>
 )}
-
-
-{/* <Container id="main" position="sticky" bottom="0" z-index="10" bg="black">
-  <Input placeholder="Send a question" onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem" my="1rem"/>
-</Container> */}
