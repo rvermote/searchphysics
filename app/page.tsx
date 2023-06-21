@@ -28,6 +28,12 @@ export default function Home() {
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
   }
 
+  const ReplaceTitle=(title:string)=>{
+    title=title.replaceAll("ï½œ","-")
+    title=title.replaceAll("ï¼š",":")
+    return title
+  }
+
   const fetchPinecone = () => {fetch("/api/pineconeRequest", {
     method: "POST",
     body: JSON.stringify({question: text}),
@@ -43,7 +49,7 @@ export default function Home() {
       .then((data) => {
         setTextStates((prevTextStates) => ({...prevTextStates, globalID:prevTextStates.globalID+1}))
         data.message.forEach((m:Object, subIndex:number) => textStateSetter(textStates.globalID, subIndex, subIndex==0))
-        setResults((prevResults) => [...prevResults, [text,data.message]])
+        setResults((prevResults) => [...prevResults, [text,data.message.map((record:Search) => {return {...record, title:ReplaceTitle(record.title)}})]])
       })
       .catch(error => console.log(error))}
 
@@ -83,19 +89,19 @@ export default function Home() {
 
   const makeText = (text:string,searches:Search[],index:number) => {
     return (
-      <React.Fragment key={`${text}_${index}`}>
-        <Text key={`${text}_${index}_main`} m="2" fontSize="lg">{text}</Text>
+      <React.Fragment key={`${index}`}>
+        <Text key={`${index}_main`} m="2" fontSize="lg">{text}</Text>
         <Flex direction="column-reverse" gap="2">
         {searches.map((search, subIndex) => (
-          <Flex key={`${index}_${subIndex}`} direction="column" alignItems="center" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="3" position="relative">
+          <Flex key={`${index}_${subIndex}`} direction="column" alignItems="center" gap = "2" bg={subIndex%2 ? "gray.200" : "gray.100"} borderRadius="10" p="3" position="relative">
             <Text key={`${index}_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" fontWeight="700" fontSize="xl" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
             <Text key={`${index}_${subIndex}_title`} fontWeight="600" align="center" maxW="80%">{search["title"]} </Text>
-            <Text key={`${index}_${subIndex}_text`} cursor="pointer" backgroundColor={subIndex % 2 ? 'gray.200' : 'white'} borderRadius="lg" p="1rem" onClick={() => textStateSetter(index, subIndex, textStates.IDs[`${index}_${subIndex}`],true)}>
+            <Text key={`${index}_${subIndex}_text`} cursor="pointer" backgroundColor={subIndex % 2 ? 'gray.50' : 'white'} borderRadius="lg" p="1rem" onClick={() => textStateSetter(index, subIndex, textStates.IDs[`${index}_${subIndex}`],true)}>
                 ... {textStates.IDs[`${index}_${subIndex}`]==true?search["text"]:search["text"].substring(0,200)} ...
                 <span className={`float-right text-gray-500 hover:text-gray-600 ${textStates.IDs[`${index}_${subIndex}`] ? "invisible" : ""}`}> (Click for More) </span>
             </Text>
             <Text key={`${index}_${subIndex}_time`} alignItems="end" color="gray.500" onClick={() => OpenLink(search)}> 
-              <span className={`flex hover:cursor-pointer justify-between ${subIndex % 2 ? 'bg-gray-200 hover:bg-gray-100' : 'bg-white hover:bg-gray-200'} p-1 rounded-lg`}>
+              <span className={`flex hover:cursor-pointer justify-between ${subIndex % 2 ? 'bg-gray-50 hover:bg-white' : 'bg-white hover:bg-white'} p-1 rounded-lg`}>
                 <Image src="/images/Youtube.svg" height={32} width={32} alt="YouTube Logo"/> 
                 {secondsToHour(search["start"])} - {secondsToHour(search["end"])}
               </span>
