@@ -83,20 +83,20 @@ export default function Home() {
     )}
 
   return (
-      <ChakraProvider>
-        <Container maxW="1000px" my="5">
-          <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5" minH="calc(100vh - 5rem)">
-            <Container id="main" textAlign="center">
-              <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
-            </Container>
-            <div id="mainContainer" className="max-h-screen max-w-[60%] overflow-auto mt-3">
-              <Flex direction="column-reverse" justifyContent="flex-start" align = "center" gap="5">
-                {results.map(([text,searches],index) => makeText(text,searches,index))}
-              </Flex>
-            </div>
-          </Flex>
-        </Container>
-      </ChakraProvider>
+        <div className="max-h-screen p-[3rem]">
+          <ChakraProvider>
+            <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5">
+              <Container id="main" textAlign="center">
+                <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
+              </Container>
+              <div id="mainContainer" className="max-h-[calc(100vh-10rem)] max-w-[600px] overflow-auto mt-3">
+                <Flex direction="column-reverse" justifyContent="flex-start" align = "center" gap="5">
+                  {results.map(([text,searches],index) => makeText(text,searches,index))}
+                </Flex>
+              </div>
+            </Flex>
+            </ChakraProvider>
+        </div>
 )}
 
 
