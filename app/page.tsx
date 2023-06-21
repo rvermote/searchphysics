@@ -3,18 +3,13 @@ import {useEffect,useState} from "react";
 import Image from "next/image";
 import {ChakraProvider,Input,Container,Flex,extendTheme, Text} from "@chakra-ui/react";
 import React from "react";
-
-const theme = extendTheme({
-  config: {
-    initialColorMode: 'dark',
-    useSystemColorMode: false,
-  },
-})
+import {ReplaceTitle, OpenLink, secondsToHour} from "@/components/functions";
 
 type Result = [string, Search[]]
 type Search = {title:string, text:string, start:number, end:number, url:string}
 type IDs = {[key:string]:boolean}
 type TextState = {globalID : number, IDs : IDs}
+
 
 export default function Home() {
 
@@ -23,15 +18,14 @@ export default function Home() {
   const [debounce, setDebounce] = useState<boolean>(true)
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
+  useEffect(() => {
+    const mainContainer = document.getElementById("mainContainer")
+    if (mainContainer) mainContainer.scrollTop = mainContainer.scrollHeight
+  }, [results])
+
   const textStateSetter= (index:number, subIndex:number, val:boolean, reverse:boolean = false) => {
     if (reverse) setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:!val}}))
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
-  }
-
-  const ReplaceTitle=(title:string)=>{
-    title=title.replaceAll("ï½œ","-")
-    title=title.replaceAll("ï¼š",":")
-    return title
   }
 
   const fetchPinecone = () => {fetch("/api/pineconeRequest", {
@@ -63,40 +57,15 @@ export default function Home() {
     }
   }
 
-  const OpenLink = (search:Search) => {
-    let seconds = Math.max(0,search["start"]-5)
-    try{
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds - (hours * 3600)) / 60)
-      const sec = seconds - (hours * 3600) - (minutes * 60)
-      window.open("https://www.youtube.com/watch?v="+search["url"]+"&t="+hours+"h"+minutes+"m"+sec+"s", "_blank")
-    }catch(e){
-      console.log(e)
-    }
-  }
-
-  const secondsToHour = (seconds:number) => {
-    const hours:number = Math.floor(seconds / 3600)
-    const minutes:number = Math.floor((seconds - (hours * 3600)) / 60)
-    const sec:number = seconds - (hours * 3600) - (minutes * 60)
-
-    const paddedMinutes: string = minutes > 9 ? String(minutes) : `0${minutes}`
-    const paddedSec: string = sec > 9 ? String(sec) : `0${sec}`
-
-    return hours + ":" + paddedMinutes  + ":" + paddedSec
-  }
-    
-
   const makeText = (text:string,searches:Search[],index:number) => {
     return (
-      <React.Fragment key={`${index}`}>
-        <Text key={`${index}_main`} m="2" fontSize="lg">{text}</Text>
-        <Flex direction="column-reverse" gap="2">
+      <React.Fragment key={index}>
+        <Flex direction="column-reverse" align="center" gap="2" order={-index}>
         {searches.map((search, subIndex) => (
           <Flex key={`${index}_${subIndex}`} direction="column" alignItems="center" gap = "2" bg={subIndex%2 ? "gray.200" : "gray.100"} borderRadius="10" p="3" position="relative">
             <Text key={`${index}_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" fontWeight="700" fontSize="xl" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
             <Text key={`${index}_${subIndex}_title`} fontWeight="600" align="center" maxW="80%">{search["title"]} </Text>
-            <Text key={`${index}_${subIndex}_text`} cursor="pointer" backgroundColor={subIndex % 2 ? 'gray.50' : 'white'} borderRadius="lg" p="1rem" onClick={() => textStateSetter(index, subIndex, textStates.IDs[`${index}_${subIndex}`],true)}>
+            <Text id={`${index}_${subIndex}}_text`} key={`${index}_${subIndex}_text`} cursor="pointer" backgroundColor={subIndex % 2 ? 'gray.50' : 'white'} borderRadius="lg" p="1rem" onClick={() => textStateSetter(index, subIndex, textStates.IDs[`${index}_${subIndex}`],true)}>
                 ... {textStates.IDs[`${index}_${subIndex}`]==true?search["text"]:search["text"].substring(0,200)} ...
                 <span className={`float-right text-gray-500 hover:text-gray-600 ${textStates.IDs[`${index}_${subIndex}`] ? "invisible" : ""}`}> (Click for More) </span>
             </Text>
@@ -108,22 +77,23 @@ export default function Home() {
             </Text>
           </Flex>
         ))}
+        <Text key={`${index}_main`} m="2" fontSize="lg">{text}</Text>
         </Flex>
       </React.Fragment>
     )}
 
   return (
-      <ChakraProvider theme={theme}>
+      <ChakraProvider>
         <Container maxW="1000px" my="5">
-          <Flex direction="column-reverse" justifyContent="flex-start" align="center" gap="5" minH="calc(100vh - 5rem)">
+          <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5" minH="calc(100vh - 5rem)">
             <Container id="main" textAlign="center">
               <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
             </Container>
-            <Container maxHeight="calc(100vh - 10rem)"overflow="auto">
-              <Flex direction="column" justifyContent="flex-end" align = "center" gap="5">
+            <div id="mainContainer" className="max-h-screen max-w-[60%] overflow-auto mt-3">
+              <Flex direction="column-reverse" justifyContent="flex-start" align = "center" gap="5">
                 {results.map(([text,searches],index) => makeText(text,searches,index))}
               </Flex>
-            </Container>
+            </div>
           </Flex>
         </Container>
       </ChakraProvider>
