@@ -73,10 +73,9 @@ export default function Home() {
   const makeText = (text:string,searches:Object[],index:number) => {
     return (
       <React.Fragment key={`${text}_${index}`}>
-        <Text key={`${text}_${index}_main`} m="2" fontSize="lg">{text}</Text>
         {searches.map((search, subIndex) => (
           <Flex key={`${text}_${index}_sub_${subIndex}_main`} direction="column" alignItems="center" gap = "2" bg={subIndex%2 ? "gray.300" : "gray.100"} borderRadius="10" p="3" position="relative">
-            <Text key={`${text}_${index}_sub_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
+            <Text key={`${text}_${index}_sub_${subIndex}_index`} position="absolute" top="0.35rem" left="0.35rem" fontWeight="700" fontSize="xl" color={subIndex==0?"yellow.500":"gray.500"}>#{subIndex+1}</Text>
             <Text key={`${text}_${index}_sub_${subIndex}_title`} fontWeight="600" align="center" maxW="80%">{search["title"]} </Text>
             <Text key={`${text}_${index}_sub_${subIndex}_text`} backgroundColor={subIndex % 2 ? 'gray.200' : 'white'} borderRadius="lg" p="1rem">... {subIndex==0?search["text"]:search["text"].substring(0,200)} ...</Text>
             <Text key={`${text}_${index}_sub_${subIndex}_time`} alignItems="end" color="gray.500" onClick={() => OpenLink(search)}> 
@@ -87,6 +86,7 @@ export default function Home() {
             </Text>
           </Flex>
         ))}
+        <Text key={`${text}_${index}_main`} m="2" fontSize="lg">{text}</Text>
       </React.Fragment>
     )}
 
@@ -98,7 +98,7 @@ export default function Home() {
               <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter") sendRequest()}} p="1.5rem"/>
             </Container>
             <Container maxHeight="calc(100vh - 10rem)"overflow="auto">
-              <Flex direction="column" justifyContent="flex-end" align = "center" gap="2">
+              <Flex direction="column-reverse" justifyContent="flex-end" align = "center" gap="2">
                 {results.map(([text,searches],index) => makeText(text,searches,index))}
               </Flex>
             </Container>

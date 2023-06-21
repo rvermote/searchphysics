@@ -16,7 +16,7 @@ export async function POST(request: Request){
         inputs: data.question})
         let req = {queryRequest:{
             vector: output as number[],
-            topK: 3,
+            topK: 5,
             includeValues: false,
             includeMetadata: true
         }
