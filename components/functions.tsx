@@ -6,18 +6,6 @@ export const ReplaceTitle=(title:string)=>{
     return title
   }
   
-export  const OpenLink = (search:Search) => {
-    let seconds = Math.max(0,search["start"]-5)
-    try{
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.floor((seconds - (hours * 3600)) / 60)
-      const sec = seconds - (hours * 3600) - (minutes * 60)
-      window.open("https://www.youtube.com/watch?v="+search["url"]+"&t="+hours+"h"+minutes+"m"+sec+"s", "_blank")
-    }catch(e){
-      console.log(e)
-    }
-  }
-  
 export const secondsToHour = (seconds:number) => {
     const hours:number = Math.floor(seconds / 3600)
     const minutes:number = Math.floor((seconds - (hours * 3600)) / 60)

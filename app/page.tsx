@@ -3,7 +3,7 @@ import {useEffect,useState} from "react";
 import Image from "next/image";
 import {ChakraProvider,Input,Container,Flex,extendTheme, Text} from "@chakra-ui/react";
 import React from "react";
-import {ReplaceTitle, OpenLink, secondsToHour} from "@/components/functions";
+import {ReplaceTitle, secondsToHour} from "@/components/functions";
 import {FaRegPaperPlane} from "react-icons/fa"
 
 type Result = [string, Search[]]
@@ -19,6 +19,7 @@ export default function Home() {
   const [debounce, setDebounce] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
+  var youtubeWindow:any = null
 
   useEffect(() => {
     const mainContainer = document.getElementById("mainContainer")
@@ -59,6 +60,20 @@ export default function Home() {
       setTimeout(() => {setDebounce(false)}, 1000)
       await fetchPinecone()
     }
+  }
+
+  const OpenLink = (search:Search) => {
+    let seconds = Math.max(0,search["start"]-5)
+    let hours = Math.floor(seconds / 3600)
+    let minutes = Math.floor((seconds - (hours * 3600)) / 60)
+    let sec = seconds - (hours * 3600) - (minutes * 60)
+    let link = "https://www.youtube.com/watch?v="+search["url"]+"&t="+hours+"h"+minutes+"m"+sec+"s"
+    if(youtubeWindow as any && !youtubeWindow.closed){
+      youtubeWindow.location.href=link
+    }else{
+      youtubeWindow = window.open(link,"_blank")
+    }
+
   }
 
   const makeText = (text:string,searches:Search[],index:number) => {

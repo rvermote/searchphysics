@@ -3,7 +3,7 @@ import pinecone,{initPinecone} from "@/config/pinecone"
 import { HfInference } from "@huggingface/inference";
 
 initPinecone()
-pinecone.projectName="579db3b"
+pinecone.projectName=process.env.PROJECTNAME as string
 const index = pinecone.Index(process.env.INDEX as string)
 
 const inference = new HfInference(process.env.HF_ACCESS_TOKEN)
