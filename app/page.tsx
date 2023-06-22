@@ -47,6 +47,7 @@ export default function Home() {
         data.message.forEach((m:Object, subIndex:number) => textStateSetter(textStates.globalID, subIndex, subIndex==0))
         setResults((prevResults) => [...prevResults, [text,data.message.map((record:Search) => {return {...record, title:ReplaceTitle(record.title)}})]])
         setLoading(false)
+        document.title=text
       })
       .catch(error => {console.log(error); setLoading(false)})}
 

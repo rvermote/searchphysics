@@ -15,6 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head><title>Search Physics</title></head>
       <body className={inter.className}>{children}</body>
     </html>
   )
