@@ -21,6 +21,13 @@ export default function Home() {
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
   useEffect(() => {
+    basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
+    const interval = setInterval(() => { 
+      basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
+    }, 180000)
+  },[])
+
+  useEffect(() => {
     const mainContainer = document.getElementById("mainContainer")
     if (mainContainer) mainContainer.scrollTop = mainContainer.scrollHeight
   }, [results])
@@ -29,6 +36,15 @@ export default function Home() {
     if (reverse) setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:!val}}))
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
   }
+
+  const basicFetchPinecone = async () => {fetch("/api/pineconeRequest", {
+    method: "POST",
+    body: JSON.stringify({question: "start"}),
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      },
+    })}
 
   const fetchPinecone = async () => {fetch("/api/pineconeRequest", {
     method: "POST",
@@ -58,7 +74,7 @@ export default function Home() {
       setLoading(true)
       setText("")
       setTimeout(() => {setDebounce(false)}, 1000)
-      await fetchPinecone()
+      fetchPinecone()
     }
   }
 
