@@ -40,7 +40,7 @@ export default function Home() {
 
   const basicFetchPinecone = async () => {fetch("/api/pineconeRequest", {
     method: "POST",
-    body: JSON.stringify({question: "start"}),
+    body: JSON.stringify({question: new Date().toString()}),
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
