@@ -17,11 +17,12 @@ export default function Home() {
   const [text, setText] = useState<string>("")
   const [results, setResults] = useState<Result[]>([])
   const [debounce, setDebounce] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [initLoad, setInitLoad] = useState<boolean>(true)
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
   useEffect(() => {
-    basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
+    basicFetchPinecone().then(() => {setLoading(false); setInitLoad(false); console.log("ready")}).catch((error) => console.log(error))
     const interval = setInterval(() => { 
       basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
     }, 180000)
@@ -122,6 +123,7 @@ export default function Home() {
                 <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter" && !debounce && !loading) sendRequest()}} p="1.5rem" backgroundColor="gray.100"/>
                 <FaRegPaperPlane color={!debounce && !loading ? "green" : "red"} onClick={() => {if(!debounce && !loading && text!="") sendRequest()} }className="hover:cursor-pointer text-xl absolute z-10 right-[2.3rem] top-[1rem]"/>
               </Container>
+              {initLoad && <Text fontWeight="600" color="gray.500" textAlign="center"> Loading initial state... Just a few seconds. </Text>}
               <div id="mainContainer" className="max-h-[calc(100vh-10rem)] max-w-[600px] overflow-auto mt-3">
                 <Flex direction="column-reverse" justifyContent="flex-start" align = "center" gap="5">
                   {results.map(([text,searches],index) => makeText(text,searches,index))}
