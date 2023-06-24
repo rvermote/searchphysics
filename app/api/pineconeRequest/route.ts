@@ -1,12 +1,5 @@
 import {NextResponse} from 'next/server';
-import pinecone,{initPinecone} from "@/config/pinecone"
-import { HfInference } from "@huggingface/inference";
-
-initPinecone()
-pinecone.projectName=process.env.PROJECTNAME as string
-const index = pinecone.Index(process.env.INDEX as string)
-
-const inference = new HfInference(process.env.HF_ACCESS_TOKEN)
+const { index, inference } =  require("@/components/serverstartup")
 
 export async function POST(request: Request){
     try{
