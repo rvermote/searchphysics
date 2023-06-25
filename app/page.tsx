@@ -27,7 +27,7 @@ export default function Home() {
     catch((error) => {console.log(error); setTimeout(() => {setLoading(false); setInitLoad(false)},4000)})
     const interval = setInterval(() => { 
       basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
-    }, 150000)
+    }, 180000)
   },[])
 
   useEffect(() => {
