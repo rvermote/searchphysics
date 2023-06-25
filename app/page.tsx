@@ -27,7 +27,7 @@ export default function Home() {
     catch((error) => {console.log(error); setTimeout(() => {setLoading(false); setInitLoad(false)},4000)})
     const interval = setInterval(() => { 
       basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
-    }, 180000)
+    }, 240000)
   },[])
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function Home() {
         <div className="min-h-screen">
           <ChakraProvider>
             <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5">
-              <Container id="main" textAlign="center" position="relative" >
+              <Container id="main" textAlign="center" position="relative" zIndex="tooltip">
                 <Input placeholder="Send a question" value={text} onChange={(e) => setText(e.target.value)} onKeyUp={(event) => {if (event.key ==="Enter" && !debounce && !loading) sendRequest()}} p="1.5rem" backgroundColor="gray.100"/>
                 <FaRegPaperPlane color={!debounce && !loading ? "green" : "red"} onClick={() => {if(!debounce && !loading && text!="") sendRequest()} }className="hover:cursor-pointer text-xl absolute z-10 right-[2.3rem] top-[1rem]"/>
               </Container>
