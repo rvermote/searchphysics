@@ -22,10 +22,12 @@ export default function Home() {
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
   useEffect(() => {
-    basicFetchPinecone().then(() => {setLoading(false); setInitLoad(false); console.log("ready")}).catch((error) => console.log(error))
+    basicFetchPinecone().
+    then(() => {setLoading(false); setInitLoad(false); console.log("ready")}).
+    catch((error) => {console.log(error); setTimeout(() => {setLoading(false); setInitLoad(false)},4000)})
     const interval = setInterval(() => { 
       basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
-    }, 180000)
+    }, 150000)
   },[])
 
   useEffect(() => {
