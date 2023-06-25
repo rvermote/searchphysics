@@ -4,7 +4,7 @@ import Image from "next/image";
 import {ChakraProvider,Input,Container,Flex,extendTheme, Text} from "@chakra-ui/react";
 import React from "react";
 import {ReplaceTitle, secondsToHour} from "@/components/functions";
-import {FaRegPaperPlane} from "react-icons/fa"
+import {FaRegPaperPlane,FaGithub} from "react-icons/fa"
 
 type Result = [string, Search[]]
 type Search = {title:string, text:string, start:number, end:number, url:string}
@@ -118,7 +118,7 @@ export default function Home() {
     )}
 
   return (
-        <div className="max-h-screen p-[3rem]">
+        <div className="min-h-screen">
           <ChakraProvider>
             <Flex direction="column-reverse" wrap="wrap-reverse" justifyContent="flex-start" align="center" gap="5">
               <Container id="main" textAlign="center" position="relative" >
@@ -132,6 +132,10 @@ export default function Home() {
                 </Flex>
               </div>
             </Flex>
-            </ChakraProvider>
+          </ChakraProvider>
+          <div className="fixed bottom-0 w-full h-7 py-1 px-3 gap-1 flex items-center justify-end bg-slate-100">
+            <a href="https://github.com/rvermote/searchphysics" target="_blank">by Robin Vermote </a>
+            <a href="https://github.com/rvermote/searchphysics"><FaGithub/></a>
+          </div>
         </div>
 )}

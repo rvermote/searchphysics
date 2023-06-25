@@ -15,7 +15,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head><title>Search Physics</title></head>
+      <head><title>PhySearch</title></head>
+      <meta name="author" content="Robin Vermote"></meta>
       <body className={inter.className}>{children}</body>
     </html>
   )
