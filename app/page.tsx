@@ -76,7 +76,7 @@ export default function Home() {
     if (!debounce){
       setDebounce(true)
       setLoading(true)
-      setTimeout(() => {setDebounce(false)}, 1000)
+      setTimeout(() => {setDebounce(false)}, 500)
       fetchPinecone()
     }
   }
