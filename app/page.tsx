@@ -14,7 +14,7 @@ type TextState = {globalID : number, IDs : IDs}
 
 export default function Home() {
 
-  const [text, setText] = useState<string>("")
+  const [text, setText] = useState<string>(new Date().toString())
   const [results, setResults] = useState<Result[]>([])
   const [debounce, setDebounce] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
@@ -22,7 +22,7 @@ export default function Home() {
   const [textStates,setTextStates] = useState<TextState>({globalID : 0, IDs : {test:false}})
 
   useEffect(() => {
-    basicFetchPinecone().then(() => {setLoading(false); setInitLoad(false); console.log("ready")}).catch((error) => console.log(error))
+    fetchPinecone().then(() => {setLoading(false); setInitLoad(false); console.log("ready")}).catch((error) => console.log(error))
     const interval = setInterval(() => { 
       basicFetchPinecone().then(() => console.log("ready")).catch((error) => console.log(error))
     }, 180000)
@@ -38,7 +38,7 @@ export default function Home() {
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
   }
 
-  const basicFetchPinecone = async () => {await fetch("/api/pineconeRequest", {
+  const basicFetchPinecone = async () => {fetch("/api/pineconeRequest", {
     method: "POST",
     body: JSON.stringify({question: new Date().toString()}),
     headers: {
@@ -66,14 +66,14 @@ export default function Home() {
         setLoading(false)
         document.title=text
       })
-      .catch(error => {console.log(error); setLoading(false)})}
+      .catch(error => {console.log(error); setLoading(false)});
+    setText("")}
 
 
   const sendRequest = async () => {
     if (!debounce){
       setDebounce(true)
       setLoading(true)
-      setText("")
       setTimeout(() => {setDebounce(false)}, 1000)
       fetchPinecone()
     }
