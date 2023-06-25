@@ -38,7 +38,7 @@ export default function Home() {
     else setTextStates((prevTextStates) => ({...prevTextStates, IDs: {...prevTextStates.IDs, [`${index}_${subIndex}`]:val}}))
   }
 
-  const basicFetchPinecone = async () => {fetch("/api/pineconeRequest", {
+  const basicFetchPinecone = async () => {await fetch("/api/pineconeRequest", {
     method: "POST",
     body: JSON.stringify({question: new Date().toString()}),
     headers: {
